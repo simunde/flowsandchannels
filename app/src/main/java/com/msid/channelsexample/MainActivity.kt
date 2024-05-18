@@ -24,18 +24,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        producer()
 //        consumer()
-        GlobalScope.launch {
+        val job = GlobalScope.launch {
             val data: Flow<Int> = producer()
             data.collect{
                 Log.d("Flows: ", it.toString())
             }
         }
 
+        GlobalScope.launch {
+            delay(3500L)
+            job.cancel()
+        }
+
     }
 
     private fun producer()= flow<Int> {
 
-        val list = listOf(1,2,3,4,5)
+        val list = listOf(1,2,3,4,5,6)
         list.forEach {
             delay(1000L)
             emit(it)
