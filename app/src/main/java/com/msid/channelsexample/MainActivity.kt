@@ -24,16 +24,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        producer()
 //        consumer()
-        val job = GlobalScope.launch {
+        GlobalScope.launch {
             val data: Flow<Int> = producer()
             data.collect{
-                Log.d("Flows: ", it.toString())
+                Log.d("Flows - 1: ", it.toString())
             }
         }
 
         GlobalScope.launch {
-            delay(3500L)
-            job.cancel()
+            delay(2500L)
+            val data: Flow<Int> = producer()
+            data.collect{
+                Log.d("Flows - 2: ", it.toString())
+            }
         }
 
     }
