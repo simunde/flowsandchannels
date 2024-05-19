@@ -12,7 +12,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -25,19 +31,43 @@ class MainActivity : AppCompatActivity() {
 //        producer()
 //        consumer()
         GlobalScope.launch {
-            val data: Flow<Int> = producer()
-            data.collect{
-                Log.d("Flows - 1: ", it.toString())
+
+            getNotes().map {
+                FormattedNote(it.isActive,it.title.uppercase(),it.description)
             }
+                .filter {
+                    it.isActive
+                }
+                .collect{
+                    Log.d("Formatted",it.toString())
+                }
+//            val data: Flow<Int> = producer()
+//            data
+//                .onStart {
+//                    Log.d("Siddhesh","Started out")
+//                }
+//                .onCompletion {
+//                    Log.d("Siddhesh","Completed")
+//                }
+//                .map {
+//
+//                }
+//                .onEach {
+//                    Log.d("Siddhesh","Received - $it")
+//                }
+//
+//                .collect{
+//                Log.d("Flows - 1: ", it.toString())
+//            }
         }
 
-        GlobalScope.launch {
-            delay(2500L)
-            val data: Flow<Int> = producer()
-            data.collect{
-                Log.d("Flows - 2: ", it.toString())
-            }
-        }
+//        GlobalScope.launch {
+//            delay(2500L)
+//            val data: Flow<Int> = producer()
+//            data.collect{
+//                Log.d("Flows - 2: ", it.toString())
+//            }
+//        }
 
     }
 
@@ -64,6 +94,21 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("Channel Received: ",channel.receive().toString())
 //        }
 //    }
+
+    private fun getNotes(): Flow<Note>{
+        val list = listOf(
+            Note(1,true,"First", "First Description"),
+            Note(2,false,"Second", "Second Description"),
+            Note(3,true,"Third", "Third Description")
+
+        )
+
+        return list.asFlow()
+    }
+
+    data class Note(val id: Int, val isActive: Boolean, val title: String, val description: String)
+
+    data class FormattedNote(val isActive: Boolean, val title: String, val description: String)
 
 
 
