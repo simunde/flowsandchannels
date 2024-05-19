@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -20,6 +21,8 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlin.system.measureTimeMillis
+import kotlin.time.measureTime
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,15 +35,27 @@ class MainActivity : AppCompatActivity() {
 //        consumer()
         GlobalScope.launch {
 
-            getNotes().map {
-                FormattedNote(it.isActive,it.title.uppercase(),it.description)
+            val time = measureTimeMillis {
+                producer()
+                    .buffer(5)
+                    .collect{
+                        delay(1500L)
+                        Log.d("Siddhesh--->",it.toString())
+                    }
+
+
             }
-                .filter {
-                    it.isActive
-                }
-                .collect{
-                    Log.d("Formatted",it.toString())
-                }
+            Log.d("Siddhesh--->",time.toString())
+
+//            getNotes().map {
+//                FormattedNote(it.isActive,it.title.uppercase(),it.description)
+//            }
+//                .filter {
+//                    it.isActive
+//                }
+//                .collect{
+//                    Log.d("Formatted",it.toString())
+//                }
 //            val data: Flow<Int> = producer()
 //            data
 //                .onStart {
