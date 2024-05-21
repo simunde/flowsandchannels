@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                 producer()
                     .collect()
                     {
-                        Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
+                        Log.d("Siddhesh","Collector thread - $it ${Thread.currentThread().name}")
                     }
             }
             catch (e:Exception){
@@ -117,6 +117,7 @@ class MainActivity : AppCompatActivity() {
            //}
         }.catch {
             Log.d("Siddhesh","Caught in Emitter ")
+            emit(-1)
 
         }
 
