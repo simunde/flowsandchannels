@@ -95,12 +95,13 @@ class MainActivity : AppCompatActivity() {
                     Log.d("Siddhesh","Map thread - ${Thread.currentThread().name}")
 
                 }
+                .flowOn(Dispatchers.IO)
                 .filter {
                     delay(500L)
                     Log.d("Siddhesh","Filter thread - ${Thread.currentThread().name}")
                     it < 8
                 }
-                .flowOn(Dispatchers.IO)
+                .flowOn(Dispatchers.Main)
                 .collect()
                 {
                     Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
