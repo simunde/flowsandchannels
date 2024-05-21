@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
@@ -88,7 +89,9 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             producer()
-                .collect(){
+                .flowOn(Dispatchers.IO)
+                .collect()
+                {
                     Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
                 }
 
@@ -104,7 +107,7 @@ class MainActivity : AppCompatActivity() {
                     Log.d("Siddhesh","Emitter thread - ${Thread.currentThread().name}")
                     emit(it)
                 }
-           // }
+           //}
         }
 
     }
