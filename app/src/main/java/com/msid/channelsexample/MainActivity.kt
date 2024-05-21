@@ -89,6 +89,17 @@ class MainActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             producer()
+                .map {
+                    delay(1000L)
+                    it*2
+                    Log.d("Siddhesh","Map thread - ${Thread.currentThread().name}")
+
+                }
+                .filter {
+                    delay(500L)
+                    Log.d("Siddhesh","Filter thread - ${Thread.currentThread().name}")
+                    it < 8
+                }
                 .flowOn(Dispatchers.IO)
                 .collect()
                 {
