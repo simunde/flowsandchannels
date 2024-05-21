@@ -88,24 +88,17 @@ class MainActivity : AppCompatActivity() {
 
 
         GlobalScope.launch(Dispatchers.Main) {
-            producer()
-                .map {
-                    delay(1000L)
-                    it*2
-                    Log.d("Siddhesh","Map thread - ${Thread.currentThread().name}")
+            try {
+                producer()
+                    .collect()
+                    {
+                        Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
+                    }
+            }
+            catch (e:Exception){
+                Log.d("Siddhesh",e.message.toString())
+            }
 
-                }
-                .flowOn(Dispatchers.IO)
-                .filter {
-                    delay(500L)
-                    Log.d("Siddhesh","Filter thread - ${Thread.currentThread().name}")
-                    it < 8
-                }
-                .flowOn(Dispatchers.Main)
-                .collect()
-                {
-                    Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
-                }
 
         }
     }
@@ -118,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                     delay(1000L)
                     Log.d("Siddhesh","Emitter thread - ${Thread.currentThread().name}")
                     emit(it)
+                    throw Exception("Error in Emitter")
                 }
            //}
         }
