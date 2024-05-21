@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -114,6 +115,9 @@ class MainActivity : AppCompatActivity() {
                     throw Exception("Error in Emitter")
                 }
            //}
+        }.catch {
+            Log.d("Siddhesh","Caught in Emitter ")
+
         }
 
     }
