@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.system.measureTimeMillis
 import kotlin.time.measureTime
 
@@ -33,19 +34,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 //        producer()
 //        consumer()
-        GlobalScope.launch {
+//        GlobalScope.launch {
 
-            val time = measureTimeMillis {
-                producer()
-                    .buffer(5)
-                    .collect{
-                        delay(1500L)
-                        Log.d("Siddhesh--->",it.toString())
-                    }
-
-
-            }
-            Log.d("Siddhesh--->",time.toString())
+//            val time = measureTimeMillis {
+//                producer()
+//                    .buffer(5)
+//                    .collect{
+//                        delay(1500L)
+//                        Log.d("Siddhesh--->",it.toString())
+//                    }
+//
+//
+//            }
+//            Log.d("Siddhesh--->",time.toString())
 
 //            getNotes().map {
 //                FormattedNote(it.isActive,it.title.uppercase(),it.description)
@@ -74,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 //                .collect{
 //                Log.d("Flows - 1: ", it.toString())
 //            }
-        }
+        //}
 
 //        GlobalScope.launch {
 //            delay(2500L)
@@ -84,15 +85,28 @@ class MainActivity : AppCompatActivity() {
 //            }
 //        }
 
+
+        GlobalScope.launch(Dispatchers.Main) {
+            producer()
+                .collect(){
+                    Log.d("Siddhesh","Collector thread - ${Thread.currentThread().name}")
+                }
+
+        }
     }
 
-    private fun producer()= flow<Int> {
-
-        val list = listOf(1,2,3,4,5,6)
-        list.forEach {
-            delay(1000L)
-            emit(it)
+    private fun producer(): Flow<Int> {
+        return flow<Int> {
+            //withContext(Dispatchers.IO){
+                val list = listOf(1,2,3,4,5,6)
+                list.forEach {
+                    delay(1000L)
+                    Log.d("Siddhesh","Emitter thread - ${Thread.currentThread().name}")
+                    emit(it)
+                }
+           // }
         }
+
     }
 
 //    private fun producer() {
